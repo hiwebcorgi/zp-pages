@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNS 자동 발행 초기설정 가이드 — ZeroPack</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0A0A0F; color: #e8e8f0; min-height: 100vh; line-height: 1.6; }
+
+  .header { padding: 40px 24px 0; max-width: 860px; margin: 0 auto; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; color: #6C47FF; text-decoration: none; font-size: 13px; margin-bottom: 24px; }
+  .back-link:hover { color: #9b7dff; }
+  .header h1 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+  .header p { color: #666677; font-size: 13px; margin-bottom: 8px; }
+
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; margin-top: 12px; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+  .badge-twitter { background: #1a1f2e; border: 1px solid #1d9bf0; color: #1d9bf0; }
+  .badge-linkedin { background: #1a2030; border: 1px solid #0a66c2; color: #0a66c2; }
+  .badge-threads { background: #1e1a1e; border: 1px solid #cc2b5e; color: #cc2b5e; }
+  .badge-gh { background: #1a1e1a; border: 1px solid #3fb950; color: #3fb950; }
+
+  .wrapper { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* Progress stepper */
+  .stepper { display: flex; gap: 0; margin-bottom: 40px; overflow-x: auto; }
+  .step-item { flex: 1; min-width: 100px; text-align: center; position: relative; }
+  .step-item::after { content: ''; position: absolute; top: 18px; left: 50%; width: 100%; height: 2px; background: #26262e; z-index: 0; }
+  .step-item:last-child::after { display: none; }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; background: #141418; border: 2px solid #26262e; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #888899; margin: 0 auto 8px; position: relative; z-index: 1; }
+  .step-item.active .step-num { background: #6C47FF; border-color: #6C47FF; color: #fff; }
+  .step-item.done .step-num { background: #22c55e; border-color: #22c55e; color: #fff; }
+  .step-label { font-size: 11px; color: #666677; white-space: nowrap; }
+  .step-item.active .step-label { color: #c8c8d8; }
+
+  /* Section */
+  .section { margin-bottom: 40px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .section-num { width: 32px; height: 32px; border-radius: 50%; background: #6C47FF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0; }
+  .section-title { font-size: 18px; font-weight: 700; }
+  .section-sub { font-size: 12px; color: #666677; margin-top: 2px; }
+
+  .card { background: #141418; border: 1px solid #26262e; border-radius: 14px; padding: 20px 22px; margin-bottom: 14px; }
+  .card-label { font-size: 11px; font-weight: 700; color: #6C47FF; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .card-title { font-size: 14px; font-weight: 700; color: #e8e8f0; margin-bottom: 6px; }
+  .card-desc { font-size: 13px; color: #888899; }
+
+  .steps-list { list-style: none; counter-reset: step-counter; }
+  .steps-list li { counter-increment: step-counter; display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid #1a1a22; }
+  .steps-list li:last-child { border-bottom: none; }
+  .steps-list li::before { content: counter(step-counter); width: 24px; height: 24px; border-radius: 50%; background: #1e1e2e; border: 1px solid #3a3a5e; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #7c6aff; flex-shrink: 0; margin-top: 1px; }
+  .steps-list li span { font-size: 13px; color: #c8c8d8; line-height: 1.6; }
+  .steps-list li span b { color: #e8e8f0; }
+  .steps-list li a { color: #6C47FF; text-decoration: none; }
+  .steps-list li a:hover { text-decoration: underline; }
+
+  .code-box { background: #0e0e14; border: 1px solid #1e1e28; border-radius: 10px; padding: 14px 16px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: #a0aec0; margin: 10px 0; position: relative; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; padding: 4px 10px; background: transparent; border: 1px solid #26262e; border-radius: 6px; color: #888899; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .copy-btn:hover { border-color: #6C47FF; color: #6C47FF; }
+  .copy-btn.copied { border-color: #22c55e; color: #22c55e; }
+
+  .note { background: #141418; border: 1px solid #26262e; border-left: 3px solid #f59e0b; border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #a0aec0; margin: 14px 0; }
+  .note b { color: #f59e0b; }
+
+  .warn { background: #141418; border: 1px solid #26262e; border-left: 3px solid #ef4444; border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #a0aec0; margin: 14px 0; }
+  .warn b { color: #ef4444; }
+
+  .secret-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .secret-table th { text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 700; color: #666677; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #1e1e28; }
+  .secret-table td { padding: 11px 14px; border-bottom: 1px solid #1a1a22; color: #c8c8d8; vertical-align: top; }
+  .secret-table tr:last-child td { border-bottom: none; }
+  .secret-table tr:hover td { background: #18181e; }
+  .secret-name { font-family: 'SF Mono', monospace; color: #7c6aff; font-size: 11px; }
+  .secret-source { font-size: 11px; color: #666677; }
+  .platform-tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-right: 4px; }
+  .pt-tw { background: #1a1f2e; color: #1d9bf0; }
+  .pt-li { background: #1a2030; color: #0a66c2; }
+  .pt-th { background: #1e1a1e; color: #cc2b5e; }
+
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #1a1a22; font-size: 13px; color: #c8c8d8; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box { width: 18px; height: 18px; border: 2px solid #26262e; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+  .check-platform { font-size: 10px; font-weight: 700; color: #666677; margin-left: auto; flex-shrink: 0; }
+
+  .final-card { background: linear-gradient(135deg, #1a1630 0%, #1a2030 100%); border: 1px solid #6C47FF33; border-radius: 16px; padding: 28px; text-align: center; margin-top: 40px; }
+  .final-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+  .final-card p { font-size: 13px; color: #888899; margin-bottom: 20px; }
+  .final-btn { display: inline-block; padding: 12px 28px; background: #6C47FF; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; }
+  .final-btn:hover { background: #7c5aff; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back-link" href="index.html">← ZeroPack Pages</a>
+  <h1>SNS 자동 발행 초기설정 가이드</h1>
+  <p>한 번만 설정하면 매일 오전 9시 KST에 3개 플랫폼 동시 자동 발행됩니다.</p>
+  <div class="badge-row">
+    <span class="badge badge-twitter">🐦 Twitter/X</span>
+    <span class="badge badge-linkedin">💼 LinkedIn</span>
+    <span class="badge badge-threads">🧵 Threads</span>
+    <span class="badge badge-gh">⚙️ GitHub Actions</span>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <!-- 진행 단계 -->
+  <div class="stepper">
+    <div class="step-item active"><div class="step-num">1</div><div class="step-label">Twitter API</div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-label">LinkedIn API</div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-label">Threads API</div></div>
+    <div class="step-item"><div class="step-num">4</div><div class="step-label">GitHub Secrets</div></div>
+    <div class="step-item"><div class="step-num">5</div><div class="step-label">테스트 실행</div></div>
+  </div>
+
+  <!-- STEP 1: Twitter -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title">Twitter/X API 키 발급</div>
+        <div class="section-sub">소요 시간: 약 10분 | developer.twitter.com</div>
+      </div>
+    </div>
+
+    <div class="note"><b>필요한 플랜:</b> Free 플랜으로 발급 가능. 단, 월 1,500 트윗 제한. 매일 1개 = 월 30개이므로 충분.</div>
+
+    <div class="card">
+      <div class="card-label">Step 1-1</div>
+      <ul class="steps-list">
+        <li><span><a href="https://developer.twitter.com/en/portal/dashboard" target="_blank">developer.twitter.com</a> 접속 → <b>Sign up for Free Account</b> 클릭</span></li>
+        <li><span>사용 목적 입력: <b>"Automated posting for my business social media account"</b></span></li>
+        <li><span>앱 이름 입력: <b>ZeroPack Social</b> (또는 원하는 이름)</span></li>
+        <li><span>생성 후 <b>App Settings</b> → <b>Keys and Tokens</b> 탭 클릭</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Step 1-2 — 4개의 키 복사</div>
+      <div class="card-desc" style="margin-bottom:12px;">아래 4개를 복사해서 어딘가에 메모해두세요 (나중에 GitHub Secrets에 입력)</div>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyBox(this)">복사</button>
+        TWITTER_API_KEY          → API Key
+TWITTER_API_SECRET       → API Key Secret
+TWITTER_ACCESS_TOKEN     → Access Token
+TWITTER_ACCESS_TOKEN_SECRET → Access Token Secret
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Step 1-3 — 쓰기 권한 설정 (중요!)</div>
+      <ul class="steps-list">
+        <li><span><b>App Settings</b> → <b>User authentication settings</b> → Edit 클릭</span></li>
+        <li><span>App permissions: <b>Read and write</b> 선택</span></li>
+        <li><span>저장 후 Access Token을 <b>재발급</b> (기존 토큰은 쓰기 권한 없음)</span></li>
+      </ul>
+      <div class="warn"><b>주의:</b> 쓰기 권한 변경 후 반드시 Access Token을 재발급해야 합니다. 기존 토큰으로는 포스팅이 실패합니다.</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: LinkedIn -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div>
+        <div class="section-title">LinkedIn API 설정</div>
+        <div class="section-sub">소요 시간: 약 15분 | linkedin.com/developers | 토큰 60일 유효</div>
+      </div>
+    </div>
+
+    <div class="warn"><b>주의:</b> LinkedIn Access Token은 60일마다 갱신이 필요합니다. 아래 Step 2-4에서 자동 갱신 방법을 설명합니다.</div>
+
+    <div class="card">
+      <div class="card-label">Step 2-1 — 앱 생성</div>
+      <ul class="steps-list">
+        <li><span><a href="https://www.linkedin.com/developers/apps/new" target="_blank">linkedin.com/developers/apps/new</a> 접속</span></li>
+        <li><span>App name: <b>ZeroPack</b>, LinkedIn Page: 본인 프로필 또는 회사 페이지</span></li>
+        <li><span>앱 생성 후 <b>Products</b> 탭 → <b>Share on LinkedIn</b> 신청 (즉시 승인)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Step 2-2 — OAuth 2.0 Access Token 발급</div>
+      <ul class="steps-list">
+        <li><span><b>Auth</b> 탭 → <b>OAuth 2.0 tools</b> 클릭</span></li>
+        <li><span>Scopes: <b>openid, profile, w_member_social</b> 체크</span></li>
+        <li><span><b>Request access token</b> → 로그인 승인 → 토큰 복사</span></li>
+      </ul>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyBox(this)">복사</button>
+        LINKEDIN_ACCESS_TOKEN → 발급된 access_token 값
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Step 2-3 — Person ID 확인</div>
+      <ul class="steps-list">
+        <li><span>아래 API를 브라우저에서 직접 호출 (발급한 토큰 붙여넣기)</span></li>
+      </ul>
+      <div class="code-box" style="word-break:break-all;">
+        <button class="copy-btn" onclick="copyBox(this)">복사</button>
+        https://api.linkedin.com/v2/userinfo
+
+헤더: Authorization: Bearer {LINKEDIN_ACCESS_TOKEN}
+
+→ 응답의 "sub" 값이 LINKEDIN_PERSON_ID 입니다
+      </div>
+      <div class="note"><b>Tip:</b> <a href="https://www.postman.com/" target="_blank" style="color:#6C47FF;">Postman</a> 또는 브라우저 개발자도구 Network 탭에서 호출하거나, curl 명령어로 확인 가능.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Step 2-4 — 60일 토큰 갱신 알림 설정</div>
+      <div class="card-desc">LinkedIn 토큰은 60일마다 수동 갱신 필요. GitHub Actions가 실패하면 이메일 알림이 오므로 그때 재발급하면 됩니다.</div>
+      <ul class="steps-list" style="margin-top:12px;">
+        <li><span>GitHub → Settings → Notifications → <b>Actions: Failed workflows only</b> 이메일 알림 켜기</span></li>
+        <li><span>포스팅 실패 이메일 오면 Step 2-2 반복 후 GitHub Secret 업데이트</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 3: Threads -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-title">Threads API 토큰 발급</div>
+        <div class="section-sub">소요 시간: 약 10분 | developers.facebook.com | 토큰 60일 유효 (자동 갱신 가능)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Step 3-1 — Meta 개발자 앱 생성</div>
+      <ul class="steps-list">
+        <li><span><a href="https://developers.facebook.com/apps" target="_blank">developers.facebook.com/apps</a> 접속 → <b>앱 만들기</b></span></li>
+        <li><span>앱 유형: <b>기타</b> → 앱 이름: <b>ZeroPack</b></span></li>
+        <li><span>좌측 메뉴 → <b>Threads API</b> → 설정 클릭</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Step 3-2 — Access Token 발급</div>
+      <ul class="steps-list">
+        <li><span>Threads API → <b>Threads 사용자 토큰 생성기</b> 클릭</span></li>
+        <li><span>Threads 계정으로 로그인 → 권한 승인</span></li>
+        <li><span>생성된 <b>Short-lived token</b> 복사</span></li>
+        <li><span>아래 명령어로 <b>Long-lived token (60일)</b>으로 교환:</span></li>
+      </ul>
+      <div class="code-box" style="word-break:break-all;">
+        <button class="copy-btn" onclick="copyBox(this)">복사</button>
+        https://graph.threads.net/access_token
+  ?grant_type=th_exchange_token
+  &client_secret={앱_시크릿}
+  &access_token={SHORT_LIVED_TOKEN}
+
+→ 응답의 access_token = THREADS_ACCESS_TOKEN
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Step 3-3 — User ID 확인</div>
+      <div class="code-box" style="word-break:break-all;">
+        <button class="copy-btn" onclick="copyBox(this)">복사</button>
+        https://graph.threads.net/v1.0/me?access_token={THREADS_ACCESS_TOKEN}
+
+→ 응답의 "id" 값 = THREADS_USER_ID
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: GitHub Secrets -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div>
+        <div class="section-title">GitHub Secrets 입력</div>
+        <div class="section-sub">소요 시간: 약 5분 | github.com/hiwebcorgi/zp-pages/settings/secrets/actions</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">입력할 Secrets 목록 (총 8개)</div>
+      <table class="secret-table">
+        <thead>
+          <tr><th>Secret 이름</th><th>값 출처</th><th>플랫폼</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="secret-name">TWITTER_API_KEY</span></td>
+            <td><span class="secret-source">developer.twitter.com → API Key</span></td>
+            <td><span class="platform-tag pt-tw">Twitter</span></td>
+          </tr>
+          <tr>
+            <td><span class="secret-name">TWITTER_API_SECRET</span></td>
+            <td><span class="secret-source">developer.twitter.com → API Key Secret</span></td>
+            <td><span class="platform-tag pt-tw">Twitter</span></td>
+          </tr>
+          <tr>
+            <td><span class="secret-name">TWITTER_ACCESS_TOKEN</span></td>
+            <td><span class="secret-source">developer.twitter.com → Access Token</span></td>
+            <td><span class="platform-tag pt-tw">Twitter</span></td>
+          </tr>
+          <tr>
+            <td><span class="secret-name">TWITTER_ACCESS_TOKEN_SECRET</span></td>
+            <td><span class="secret-source">developer.twitter.com → Access Token Secret</span></td>
+            <td><span class="platform-tag pt-tw">Twitter</span></td>
+          </tr>
+          <tr>
+            <td><span class="secret-name">LINKEDIN_ACCESS_TOKEN</span></td>
+            <td><span class="secret-source">linkedin.com/developers → OAuth 2.0 Tools</span></td>
+            <td><span class="platform-tag pt-li">LinkedIn</span></td>
+          </tr>
+          <tr>
+            <td><span class="secret-name">LINKEDIN_PERSON_ID</span></td>
+            <td><span class="secret-source">/v2/userinfo API 응답의 "sub" 값</span></td>
+            <td><span class="platform-tag pt-li">LinkedIn</span></td>
+          </tr>
+          <tr>
+            <td><span class="secret-name">THREADS_ACCESS_TOKEN</span></td>
+            <td><span class="secret-source">Meta 개발자 → Long-lived token</span></td>
+            <td><span class="platform-tag pt-th">Threads</span></td>
+          </tr>
+          <tr>
+            <td><span class="secret-name">THREADS_USER_ID</span></td>
+            <td><span class="secret-source">graph.threads.net/v1.0/me 응답의 "id"</span></td>
+            <td><span class="platform-tag pt-th">Threads</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-label">입력 방법</div>
+      <ul class="steps-list">
+        <li><span><a href="https://github.com/hiwebcorgi/zp-pages/settings/secrets/actions" target="_blank">github.com/hiwebcorgi/zp-pages/settings/secrets/actions</a> 접속</span></li>
+        <li><span><b>New repository secret</b> 클릭</span></li>
+        <li><span>Name: 위 표의 Secret 이름 입력 / Secret: 해당 값 붙여넣기</span></li>
+        <li><span>위 과정을 8개 반복</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 5: 테스트 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div>
+        <div class="section-title">테스트 실행</div>
+        <div class="section-sub">소요 시간: 2분 | 수동으로 워크플로우 실행해서 정상 동작 확인</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <ul class="steps-list">
+        <li><span><a href="https://github.com/hiwebcorgi/zp-pages/actions/workflows/social-post.yml" target="_blank">github.com/hiwebcorgi/zp-pages/actions/workflows/social-post.yml</a> 접속</span></li>
+        <li><span><b>Run workflow</b> 버튼 클릭 → <b>Run workflow</b> 확인</span></li>
+        <li><span>실행 완료 후 로그 확인: ✅ Twitter 발행 완료, ✅ LinkedIn 발행 완료, ✅ Threads 발행 완료</span></li>
+        <li><span>각 SNS 계정에서 실제 게시물 올라갔는지 확인</span></li>
+      </ul>
+      <div class="note"><b>Tip:</b> 테스트 시 schedule.json에서 오늘 날짜로 된 항목이 없으면 "오늘 예약된 포스팅 없음"으로 종료됩니다. 테스트용으로 오늘 날짜 항목을 추가하거나, 기존 항목의 date를 오늘로 임시 수정 후 테스트하세요.</div>
+    </div>
+  </div>
+
+  <!-- 최종 체크리스트 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num" style="background:#22c55e;">✓</div>
+      <div>
+        <div class="section-title">초기설정 최종 체크리스트</div>
+      </div>
+    </div>
+    <div class="card">
+      <ul class="checklist">
+        <li><div class="check-box"></div><span>Twitter 앱 생성 + 쓰기 권한 설정 + 4개 키 복사</span><span class="check-platform">Twitter</span></li>
+        <li><div class="check-box"></div><span>LinkedIn 앱 생성 + Share on LinkedIn 제품 추가 + Access Token 발급</span><span class="check-platform">LinkedIn</span></li>
+        <li><div class="check-box"></div><span>LinkedIn Person ID 확인 (/v2/userinfo 호출)</span><span class="check-platform">LinkedIn</span></li>
+        <li><div class="check-box"></div><span>Threads 앱 생성 + Long-lived token 발급 + User ID 확인</span><span class="check-platform">Threads</span></li>
+        <li><div class="check-box"></div><span>GitHub Secrets 8개 입력 완료</span><span class="check-platform">GitHub</span></li>
+        <li><div class="check-box"></div><span>수동 실행으로 3개 플랫폼 발행 확인</span><span class="check-platform">테스트</span></li>
+        <li><div class="check-box"></div><span>GitHub Actions 이메일 알림 켜기 (LinkedIn 토큰 만료 감지용)</span><span class="check-platform">관리</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 운영 방법 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num" style="background:#f59e0b;">i</div>
+      <div>
+        <div class="section-title">이후 운영 방법</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">포스팅 추가/수정</div>
+      <div class="card-desc" style="margin-bottom:12px;">social/schedule.json 파일을 직접 편집해서 새 포스팅 추가</div>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyBox(this)">복사</button>
+        {
+  "id": 29,
+  "date": "2026-05-08",
+  "platforms": ["twitter", "linkedin", "threads"],
+  "text": "여기에 포스팅 내용 입력",
+  "posted": false
+}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">실행 시간 변경</div>
+      <div class="card-desc">.github/workflows/social-post.yml의 cron 값 수정</div>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyBox(this)">복사</button>
+        오전 9시 KST  → cron: '0 0 * * *'   (현재 설정)
+오전 7시 KST  → cron: '0 22 * * *'
+오후 12시 KST → cron: '0 3 * * *'
+오후 6시 KST  → cron: '0 9 * * *'
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">특정 플랫폼만 발행</div>
+      <div class="card-desc">schedule.json의 platforms 배열에서 원하는 플랫폼만 지정</div>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyBox(this)">복사</button>
+        "platforms": ["twitter"]              // Twitter만
+"platforms": ["linkedin", "threads"]  // LinkedIn + Threads
+"platforms": ["twitter", "linkedin", "threads"]  // 전체
+      </div>
+    </div>
+  </div>
+
+  <div class="final-card">
+    <h3>설정 완료 후 자동화 효과</h3>
+    <p>매일 오전 9시 KST · 3개 플랫폼 동시 발행 · 사람 개입 0%<br>28일치 포스팅 사전 입력 완료 (2026-04-10 ~ 2026-05-07)</p>
+    <a class="final-btn" href="https://github.com/hiwebcorgi/zp-pages/actions" target="_blank">GitHub Actions 확인하기 →</a>
+  </div>
+
+</div>
+
+<script>
+function copyBox(btn) {
+  const box = btn.closest('.code-box');
+  const text = box.innerText.replace('복사', '').replace('복사됨 ✓', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '복사됨 ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

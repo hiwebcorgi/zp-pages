@@ -1,0 +1,205 @@
+{
+  "config": {
+    "timezone": "Asia/Seoul",
+    "platforms": ["twitter", "linkedin", "threads"],
+    "note": "posted:true 이면 스킵. date 형식: YYYY-MM-DD"
+  },
+  "posts": [
+    {
+      "id": 1,
+      "date": "2026-04-10",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "학원 원장님한테 홈페이지 만들어드렸는데 첫 질문이 "이거 매달 얼마 내야 해요?"였어요.\n\n무료라고 했더니 그게 더 이상하다고 하시더라고요.\n\n그동안 당연히 유지비 내는 거로 알고 계셨던 거죠.\n\n#소상공인 #홈페이지",
+      "posted": false
+    },
+    {
+      "id": 2,
+      "date": "2026-04-11",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "A local business owner I know paid $180/month for three years for a basic website before realizing she could just cancel and keep the files.\n\nThat's $6,480 for a subscription she never fully used.\n\nThe web hosting industry runs on people not doing this math.\n\n#smallbusiness #buildinpublic",
+      "posted": false
+    },
+    {
+      "id": 3,
+      "date": "2026-04-12",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "병원 홈페이지 외주 맡기면 첫 견적이 보통 300~500만원에서 시작해요.\n\n거기다 매달 유지보수비 별도. 유지보수가 뭔지도 모르면서 그냥 냈다는 분들도 있고요.\n\n이게 당연한 건지 아직도 잘 모르겠어요.\n\n#병원홈페이지 #소기업",
+      "posted": false
+    },
+    {
+      "id": 4,
+      "date": "2026-04-13",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "The monthly subscription model for website builders only works if you forget to cancel.\n\nMost small businesses I've talked to stick with platforms they've outgrown because switching feels like too much work.\n\nThat friction is a product feature, not an accident.\n\n#saas #smallbusiness",
+      "posted": false
+    },
+    {
+      "id": 5,
+      "date": "2026-04-14",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "소기업 사장님들이랑 얘기해보면 홈페이지 있는 거랑 없는 거 차이를 다들 알아요.\n\n근데 막상 만들려니 뭐부터 해야 할지 모른다는 분들이 많더라고요.\n\n정보가 너무 없거나, 아니면 너무 많거나.\n\n#소상공인 #학원마케팅",
+      "posted": false
+    },
+    {
+      "id": 6,
+      "date": "2026-04-15",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "Building ZeroPack week 3.\n\nThe hardest part isn't the code — it's explaining why GitHub + Vercel is free hosting that actually works, without losing people in the first sentence.\n\nStill figuring that out.\n\n#buildinpublic #indiehacker",
+      "posted": false
+    },
+    {
+      "id": 7,
+      "date": "2026-04-16",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "아임웹, 카페24, 우커머스... 다 써봤는데 결국 월 결제 안 하면 기능 잠기는 구조예요.\n\n처음엔 그냥 쓰다가 어느 순간 의존이 되어있는 거죠.\n\n해지하려면 대안부터 찾아야 하고, 대안 찾으려면 또 시간이 필요하고.\n\n#웹빌더 #소기업",
+      "posted": false
+    },
+    {
+      "id": 8,
+      "date": "2026-04-17",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "Wix: $17–$159/mo. Squarespace: $16–$49/mo. Webflow: $14–$212/mo.\n\nI've seen small clinics and studios paying more for their website than for their electricity.\n\nThat math bothers me. That's why I built ZeroPack.\n\n#saas #smallbusiness #buildinpublic",
+      "posted": false
+    },
+    {
+      "id": 9,
+      "date": "2026-04-18",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "GitHub 계정 만들어보셨어요?\n\n개발자 아니어도 무료로 웹사이트 호스팅할 수 있는 구조가 거기 있어요. Vercel이랑 연동하면 배포까지 자동이고. 이걸 모르는 분들이 생각보다 많아서요.\n\n#GitHub #홈페이지제작",
+      "posted": false
+    },
+    {
+      "id": 10,
+      "date": "2026-04-19",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "Most no-code tools are designed for marketers and tech-adjacent people.\n\nWhat about the dentist, the yoga studio owner, the small academy director who just needs a clean site to exist online?\n\nThat's the gap I'm trying to fill with ZeroPack.\n\n#nocode #smallbiz #buildinpublic",
+      "posted": false
+    },
+    {
+      "id": 11,
+      "date": "2026-04-20",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "데모 사이트 올려뒀어요.\n\ntemp01.zpack.app\n\n공지사항, 블로그, FAQ, 채용공고, 포트폴리오, 문의폼. 관리자 로그인해서 직접 글도 써볼 수 있어요.\n\n실제로 어떻게 생겼는지 보는 게 설명보다 빠를 것 같아서요. #ZeroPack",
+      "posted": false
+    },
+    {
+      "id": 12,
+      "date": "2026-04-21",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "Put up a demo at temp01.zpack.app — full business site with notice board, blog, FAQ, jobs, portfolio, contact form, and admin login.\n\nThat's what ZeroPack generates for you.\n\nShowing is faster than describing.\n\n#buildinpublic #saas",
+      "posted": false
+    },
+    {
+      "id": 13,
+      "date": "2026-04-22",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "소기업이랑 소상공인 분들한테 홈페이지 비용이 장벽이 되면 안 된다고 생각해서 ZeroPack 만들기 시작했는데, 생각보다 이 문제가 심각하더라고요.\n\n아직도 개발자한테 300만원 내고 만드는 분들이 많아요.\n\n그리고 그게 당연한 줄 알고 있고요.\n\n#소상공인 #홈페이지",
+      "posted": false
+    },
+    {
+      "id": 14,
+      "date": "2026-04-23",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "A friend's mom ran a small beauty clinic and was quoted $3,000 to build a basic website.\n\nShe ended up just not having one. Too expensive, and she didn't trust the process anyway.\n\nThat felt wrong. That's why I built ZeroPack.\n\n#indiehacker #buildinpublic",
+      "posted": false
+    },
+    {
+      "id": 15,
+      "date": "2026-04-24",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "포트폴리오 노션에 정리해두신 프리랜서 분들 많죠?\n\n노션이 나쁜 건 아닌데, 도메인이 내 것이 아니잖아요. 플랫폼 없어지거나 정책 바뀌면 같이 없어지는 거고.\n\n일 잘하는 사람일수록 주소가 내 것이어야 한다고 생각해요.\n\n#프리랜서 #포트폴리오",
+      "posted": false
+    },
+    {
+      "id": 16,
+      "date": "2026-04-25",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "Freelancers with their work scattered across Behance, Notion, and Instagram aren't losing clients necessarily.\n\nBut they are giving up control.\n\nYour portfolio should live on a domain you actually own.\n\n#freelance #buildinpublic",
+      "posted": false
+    },
+    {
+      "id": 17,
+      "date": "2026-04-26",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "ZeroPack 베타 처음 열었을 때 제일 많이 들은 말이 "이런 게 있는 줄 몰랐어요"였어요.\n\n홍보를 못 한 건지, 아니면 그냥 없는 줄 알고 다들 그냥 월 구독하고 계셨던 건지.\n\n아직도 잘 모르겠어요.\n\nzpack.app",
+      "posted": false
+    },
+    {
+      "id": 18,
+      "date": "2026-04-27",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "Most of the feedback I get about ZeroPack is "I didn't know this was possible at this price."\n\nWhich either means the pricing is right, or the marketing is terrible.\n\nProbably both.\n\nzpack.app #saas #indiehacker #buildinpublic",
+      "posted": false
+    },
+    {
+      "id": 19,
+      "date": "2026-04-28",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": ""GitHub이 뭔지 모른다"고 하시는 분들 많은데요.\n\n저도 처음엔 그랬어요. 근데 결국 GitHub은 그냥 파일 올려두는 곳이에요. 이름이 무서워 보이는 거지 개념 자체는 별거 없어요.\n\n이름이 진입장벽인 경우가 꽤 많더라고요.\n\n#IT초보 #홈페이지제작",
+      "posted": false
+    },
+    {
+      "id": 20,
+      "date": "2026-04-29",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": '"I don\'t do GitHub."\n\nI hear this a lot.\n\nThe irony is GitHub is just a folder with a version history. The name does more damage than the actual learning curve.\n\nIf we rebranded it "free website storage" half the intimidation would disappear.\n\n#nocode #buildinpublic',
+      "posted": false
+    },
+    {
+      "id": 21,
+      "date": "2026-04-30",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "소기업 홈페이지 유지보수비로 매달 5~10만원 내고 계신 분들 계세요?\n\n그 유지보수가 구체적으로 뭔지 설명 들어보셨어요?\n\n서버 비용은 실제로 그것보다 훨씬 적은 경우가 많아요. 뭔가 이상하다 싶으면 물어보세요.\n\n#소기업 #홈페이지",
+      "posted": false
+    },
+    {
+      "id": 22,
+      "date": "2026-05-01",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "The thing about SaaS subscription fatigue is real.\n\nPeople are genuinely relieved when something is one-time. Not just because of the money — but because it's one less thing to track, cancel, or forget to cancel.\n\nThat emotional overhead is underrated.\n\n#saas #buildinpublic #indiehacker",
+      "posted": false
+    },
+    {
+      "id": 23,
+      "date": "2026-05-02",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "사장님들한테 홈페이지에서 뭐가 제일 중요하냐고 물으면 대부분 비슷해요.\n\n비용 적게, 관리 쉽게, 그냥 있어 보이게.\n\n이 세 가지가 전부인데 이게 다 되는 게 생각보다 별로 없더라고요.\n\n#소기업 #홈페이지제작",
+      "posted": false
+    },
+    {
+      "id": 24,
+      "date": "2026-05-03",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "What small businesses actually need from a website: a way to post updates, show their work, answer FAQs, and let people reach them.\n\nThat's it. Not a $200/month platform with features they'll never touch.\n\nThe overcomplicated option wins because it has better marketing.\n\n#smallbiz #saas",
+      "posted": false
+    },
+    {
+      "id": 25,
+      "date": "2026-05-04",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "작은 회사일수록 채용 공고를 외부 플랫폼에만 올리는 경우가 많은데요.\n\n자기 홈페이지에 채용 게시판이 있는 것만으로도 지원자한테 다르게 보여요.\n\n같은 회사인데 홈페이지 있는 곳이랑 없는 곳은 느낌이 달라요, 솔직히.\n\n#채용 #소기업",
+      "posted": false
+    },
+    {
+      "id": 26,
+      "date": "2026-05-05",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "Small companies listing jobs on Indeed but having no website are judged unfairly.\n\nHaving a real site with a jobs page changes how seriously candidates take you — even if the company is three people.\n\nFirst impressions online aren't optional anymore.\n\n#hiring #smallbiz #buildinpublic",
+      "posted": false
+    },
+    {
+      "id": 27,
+      "date": "2026-05-06",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "ZeroPack 만들면서 소상공인 분들이랑 많이 얘기했어요.\n\n홈페이지 비용 때문에 아예 포기하신 분들도 꽤 있더라고요. 그냥 SNS로만 운영하시는 분들도 많고.\n\n이게 바뀌었으면 해서 계속 만들고 있어요.\n\nzpack.app",
+      "posted": false
+    },
+    {
+      "id": 28,
+      "date": "2026-05-07",
+      "platforms": ["twitter", "linkedin", "threads"],
+      "text": "Two weeks of building in public.\n\nZeroPack is live. Demo is running. Beta users are in.\n\nNext: finding the small business owners who don't follow #buildinpublic but actually need this. That's the real challenge.\n\nzpack.app #indiehacker #saas",
+      "posted": false
+    }
+  ]
+}
