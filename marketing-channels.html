@@ -29,7 +29,23 @@
   .tab-panel.active { display: block; }
 
   /* Cards */
-  .card { background: #141418; border: 1px solid #26262e; border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; }
+  .card { background: #141418; border: 1px solid #26262e; border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; position: relative; transition: opacity 0.2s; }
+  .card.done { opacity: 0.35; border-color: #22c55e44; }
+  .card.done .card-title, .card.done .content-box { text-decoration: line-through; text-decoration-color: #22c55e66; }
+  .card.done::after { content: '✓ 완료'; position: absolute; top: 12px; right: 12px; background: #14532d; color: #22c55e; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; border: 1px solid #22c55e44; }
+  .card.hidden-done { display: none; }
+  .done-btn { flex-shrink: 0; padding: 5px 11px; background: transparent; border: 1px solid #26262e; border-radius: 7px; color: #555566; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .done-btn:hover { border-color: #22c55e; color: #22c55e; }
+  .card.done .done-btn { background: #14532d; border-color: #22c55e; color: #22c55e; }
+  .progress-bar-wrap { background: #141418; border: 1px solid #26262e; border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; }
+  .progress-bar-bg { flex: 1; height: 6px; background: #26262e; border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: #22c55e; border-radius: 4px; transition: width 0.4s; }
+  .progress-text { font-size: 12px; color: #888899; white-space: nowrap; }
+  .progress-text b { color: #22c55e; }
+  .hide-done-btn { flex-shrink: 0; padding: 5px 12px; background: transparent; border: 1px solid #26262e; border-radius: 7px; color: #888899; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .hide-done-btn:hover, .hide-done-btn.active { border-color: #6C47FF; color: #6C47FF; background: #1a1628; }
+  .reset-btn { flex-shrink: 0; padding: 5px 12px; background: transparent; border: 1px solid #26262e; border-radius: 7px; color: #555566; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+  .reset-btn:hover { border-color: #ef4444; color: #ef4444; }
   .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
   .card-label { font-size: 11px; font-weight: 700; color: #6C47FF; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
   .card-title { font-size: 14px; font-weight: 700; color: #c8c8d8; }
@@ -79,6 +95,13 @@
 </div>
 
 <div class="tabs-wrapper">
+  <!-- 진행률 + 컨트롤 -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+    <span class="progress-text" id="progressText"><b>0</b> / <span id="totalCount">0</span> 완료</span>
+    <button class="hide-done-btn" id="hideDoneBtn" onclick="toggleHideDone()">완료 숨기기</button>
+    <button class="reset-btn" onclick="resetAll()" title="전체 초기화">↺ 초기화</button>
+  </div>
   <div class="tab-nav">
     <button class="tab-btn active" data-tab="twitter">Twitter/X 캘린더</button>
     <button class="tab-btn" data-tab="ph">Product Hunt Upcoming</button>
@@ -1735,7 +1758,7 @@ Product Hunt Upvotes: 100+ (런칭일)
 </div>
 
 <script>
-  // Tab switching
+  // ── 탭 전환 ──────────────────────────────────────────────────────────────────
   document.querySelectorAll('.tab-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var target = this.getAttribute('data-tab');
@@ -1746,38 +1769,126 @@ Product Hunt Upvotes: 100+ (런칭일)
     });
   });
 
-  // Copy button
+  // ── 복사 버튼 ─────────────────────────────────────────────────────────────────
   function copyCard(btn) {
     var box = btn.closest('.card').querySelector('.content-box');
     var text = box.innerText.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function() {
-        btn.textContent = '복사됨 ✓';
-        btn.classList.add('copied');
-        setTimeout(function() {
-          btn.textContent = '복사';
-          btn.classList.remove('copied');
-        }, 2000);
+        btn.textContent = '복사됨 ✓'; btn.classList.add('copied');
+        setTimeout(function() { btn.textContent = '복사'; btn.classList.remove('copied'); }, 2000);
       });
     } else {
-      // fallback
       var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
       try { document.execCommand('copy'); } catch(e) {}
       document.body.removeChild(ta);
-      btn.textContent = '복사됨 ✓';
-      btn.classList.add('copied');
-      setTimeout(function() {
-        btn.textContent = '복사';
-        btn.classList.remove('copied');
-      }, 2000);
+      btn.textContent = '복사됨 ✓'; btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = '복사'; btn.classList.remove('copied'); }, 2000);
     }
   }
+
+  // ── 완료 추적 시스템 ──────────────────────────────────────────────────────────
+  var STORAGE_KEY = 'zp_marketing_done';
+  var hideDone = false;
+
+  // 카드마다 고유 ID 부여 (card-label + card-title 조합)
+  function getCardId(card) {
+    var label = card.querySelector('.card-label');
+    var title = card.querySelector('.card-title');
+    var raw = (label ? label.innerText : '') + '||' + (title ? title.innerText : '') + '||' + card.closest('[id]')?.id;
+    return raw.trim().replace(/\s+/g, ' ');
+  }
+
+  function loadDone() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveDone(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function updateProgress() {
+    var all = document.querySelectorAll('.card');
+    var done = loadDone();
+    var doneCount = 0;
+    all.forEach(function(card) {
+      if (done[getCardId(card)]) doneCount++;
+    });
+    var total = all.length;
+    var pct = total ? Math.round(doneCount / total * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').innerHTML = '<b>' + doneCount + '</b> / <span id="totalCount">' + total + '</span> 완료';
+  }
+
+  function applyDoneState() {
+    var done = loadDone();
+    document.querySelectorAll('.card').forEach(function(card) {
+      var id = getCardId(card);
+      var isDone = !!done[id];
+      card.classList.toggle('done', isDone);
+      card.classList.toggle('hidden-done', isDone && hideDone);
+      var doneBtn = card.querySelector('.done-btn');
+      if (doneBtn) doneBtn.textContent = isDone ? '완료됨' : '완료';
+    });
+    updateProgress();
+  }
+
+  function toggleDone(btn) {
+    var card = btn.closest('.card');
+    var id = getCardId(card);
+    var done = loadDone();
+    if (done[id]) {
+      delete done[id];
+    } else {
+      done[id] = true;
+    }
+    saveDone(done);
+    applyDoneState();
+  }
+
+  function toggleHideDone() {
+    hideDone = !hideDone;
+    var btn = document.getElementById('hideDoneBtn');
+    btn.classList.toggle('active', hideDone);
+    btn.textContent = hideDone ? '완료 보이기' : '완료 숨기기';
+    applyDoneState();
+  }
+
+  function resetAll() {
+    if (!confirm('완료 표시를 전부 초기화할까요?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    applyDoneState();
+  }
+
+  // 모든 카드에 완료 버튼 주입
+  document.querySelectorAll('.card').forEach(function(card) {
+    var header = card.querySelector('.card-header');
+    if (!header) {
+      // card-header 없는 카드 (테이블 카드 등)는 오른쪽 상단에 버튼 삽입
+      var btn = document.createElement('button');
+      btn.className = 'done-btn';
+      btn.textContent = '완료';
+      btn.style.cssText = 'position:absolute;top:14px;right:14px;z-index:2;';
+      btn.onclick = function() { toggleDone(this); };
+      card.appendChild(btn);
+    } else {
+      // copy-btn 앞에 완료 버튼 삽입
+      var btn = document.createElement('button');
+      btn.className = 'done-btn';
+      btn.textContent = '완료';
+      btn.onclick = function() { toggleDone(this); };
+      var copyBtn = header.querySelector('.copy-btn');
+      if (copyBtn) {
+        header.insertBefore(btn, copyBtn);
+      } else {
+        header.appendChild(btn);
+      }
+    }
+  });
+
+  // 초기 적용
+  applyDoneState();
 </script>
 </body>
 </html>
